@@ -2,8 +2,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:istreet/providers/market_provider.dart';
-import 'package:istreet/ui/before_login/market/details/fiidii_detail.dart';
 import 'package:istreet/ui/common_widgets/common_appbar.dart';
+import 'package:istreet/ui/before_login/market/details/bulk_deals_detail.dart';
+import 'package:istreet/ui/before_login/market/details/block_deals_detail.dart';
+import 'package:istreet/ui/before_login/market/details/support_resistance_detail.dart';
 
 class MarketScreen extends ConsumerStatefulWidget {
   const MarketScreen({super.key});
@@ -889,7 +891,13 @@ class _MarketScreenState extends ConsumerState<MarketScreen>
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: _showBulkDealsPopup,
+                    onTap: () {
+                     Navigator.push(
+                 context,
+                MaterialPageRoute(builder: (_) => const BulkDealsDetailScreen()),
+           );
+          },
+
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       decoration: BoxDecoration(
@@ -931,7 +939,13 @@ class _MarketScreenState extends ConsumerState<MarketScreen>
 
                 Expanded(
                   child: GestureDetector(
-                    onTap: _showBlockDealsPopup,
+                    onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => const BlockDealsDetailScreen()),
+  );
+},
+
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       decoration: BoxDecoration(
@@ -973,7 +987,13 @@ class _MarketScreenState extends ConsumerState<MarketScreen>
 
                 Expanded(
                   child: GestureDetector(
-                    onTap: _showSupportResistancePopup,
+                    onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => const SupportResistanceDetailScreen()),
+  );
+},
+
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       decoration: BoxDecoration(
