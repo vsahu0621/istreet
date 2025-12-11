@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:istreet/config/theme/app_colors.dart';
 import 'package:istreet/data/models/mutual_fund.dart';
 import 'package:istreet/providers/mutualfund_provider.dart';
 import 'package:istreet/ui/before_login/mutualfund/fund_detail_page.dart';
 
 class MutualFundSearchPage extends ConsumerStatefulWidget {
-  final String? initialSearch; // ⭐ NEW
+  final String? initialSearch;
 
   const MutualFundSearchPage({super.key, this.initialSearch});
 
@@ -25,22 +24,25 @@ class _MutualFundSearchPageState extends ConsumerState<MutualFundSearchPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
-
     _search = widget.initialSearch?.toLowerCase() ?? "";
     _controller = TextEditingController(text: widget.initialSearch ?? "");
   }
 
-  String _getInitials(String txt) {
-    if (txt.trim().isEmpty) return "?";
-    List<String> parts = txt.split(" ");
-    return parts.length == 1
-        ? parts[0].substring(0, 2).toUpperCase()
-        : (parts[0][0] + parts[1][0]).toUpperCase();
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _controller.dispose();
+    super.dispose();
   }
 
-  bool _isDirect(MutualFund f) => f.schemeName.toLowerCase().contains("direct");
+  // ---------------- FILTER LOGIC ----------------
+
+  bool _isDirect(MutualFund f) =>
+      f.schemeName.toLowerCase().contains("direct");
+
   bool _isRegular(MutualFund f) =>
       f.schemeName.toLowerCase().contains("regular");
+
   bool _isIdcw(MutualFund f) =>
       f.schemeName.toLowerCase().contains("idcw") ||
       f.schemeName.toLowerCase().contains("bonus");
@@ -51,83 +53,410 @@ class _MutualFundSearchPageState extends ConsumerState<MutualFundSearchPage>
     return list
         .where(
           (e) =>
-              e.fundHouse.toLowerCase().contains(_search) ||
-              e.schemeName.toLowerCase().contains(_search),
+              e.schemeName.toLowerCase().contains(_search) ||
+              e.fundHouse.toLowerCase().contains(_search),
         )
         .toList();
   }
+
+  // ---------------- UI HELPERS ----------------
+
+  String _getInitials(String name) {
+    if (name.isEmpty) return "?";
+    final parts = name.split(" ");
+    return (parts.length == 1
+            ? parts[0].substring(0, 2)
+            : parts[0][0] + parts[1][0])
+        .toUpperCase();
+  }
+
+  Widget _fallbackLogo(String fundHouse) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: const Color(0xFFEEF2FF),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: Text(
+          _getInitials(fundHouse),
+          style: const TextStyle(
+            color: Color(0xFF4F46E5),
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFundLogo(MutualFund f) {
+    if (f.mfImageUrl.isNotEmpty && f.mfImageUrl.startsWith("http")) {
+      return Image.network(
+        f.mfImageUrl,
+        width: 48,
+        height: 48,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _fallbackLogo(f.fundHouse),
+      );
+    }
+    return _fallbackLogo(f.fundHouse);
+  }
+
+  Widget _fundCard(MutualFund f) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => FundDetailPage(fundName: f.schemeName),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: _buildFundLogo(f),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    f.schemeName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF111827),
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              f.fundHouse,
+              style: const TextStyle(
+                color: Color.fromARGB(255, 71, 75, 83),
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    f.schemeCategory,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF374151),
+                    ),
+                  ),
+                ),
+                Text(
+                  f.schemeStartDate,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF374151),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFDEF7EC),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    f.schemeType,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF03543F),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Color(0xFF9CA3AF),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ---------------- MAIN UI ----------------
 
   @override
   Widget build(BuildContext context) {
     final asyncData = ref.watch(searchFundProvider(_search));
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
-          "Search Mutual Funds",
-          style: TextStyle(
-            color: AppColors.textDark,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+      backgroundColor: const Color(0xFFF8FAFC),
+
+      // SAME GRADIENT APPBAR AS FundCategoryResultPage
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(70),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF3B82F6), Color(0xFF8B5CF6)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF3B82F6).withOpacity(0.3),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: Container(
+              margin: const EdgeInsets.only(left: 8),
+              child: IconButton(
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+            title: const Text(
+              "Search Mutual Funds",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
         ),
       ),
 
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: TextField(
-              controller: _controller,
-              onChanged: (v) => setState(() => _search = v.toLowerCase()),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: "Search fund house or scheme...",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+          // SAME SEARCH BAR WITH GRADIENT BACKGROUND
+          Container(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF3B82F6), Color(0xFF8B5CF6)],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF3B82F6).withOpacity(0.2),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: _controller,
+                onChanged: (v) => setState(() => _search = v.toLowerCase()),
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: Color(0xFF3B82F6),
+                    size: 24,
+                  ),
+                  suffixIcon: _search.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(
+                            Icons.close,
+                            color: Color(0xFF9CA3AF),
+                          ),
+                          onPressed: () {
+                            _controller.clear();
+                            setState(() => _search = "");
+                          },
+                        )
+                      : null,
+                  hintText: "Search funds or AMC...",
+                  hintStyle: TextStyle(
+                    color: Colors.grey.shade400,
+                    fontSize: 15,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                 ),
               ),
             ),
           ),
 
-          TabBar(
-            controller: _tabController,
-            labelColor: AppColors.primaryBlue,
-            unselectedLabelColor: Colors.grey,
-            indicatorColor: AppColors.primaryBlue,
-            tabs: const [
-              Tab(text: "Direct"),
-              Tab(text: "Regular"),
-              Tab(text: "IDCW"),
-              Tab(text: "Other"),
-            ],
+          const SizedBox(height: 4),
+
+          // SAME TAB BAR WITH PILL DESIGN
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: TabBar(
+              controller: _tabController,
+              labelColor: Colors.white,
+              unselectedLabelColor: const Color(0xFF6B7280),
+              labelStyle: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 13,
+              ),
+              indicator: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF3B82F6), Color(0xFF8B5CF6)],
+                ),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF3B82F6).withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              indicatorSize: TabBarIndicatorSize.tab,
+              dividerColor: Colors.transparent,
+              tabs: const [
+                Tab(text: "Direct"),
+                Tab(text: "Regular"),
+                Tab(text: "IDCW"),
+                Tab(text: "Other"),
+              ],
+            ),
           ),
 
           Expanded(
             child: asyncData.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, s) => Center(child: Text("Error: $e")),
-              data: (all) {
-                final filtered = _searchFilter(all);
-
+              loading: () => Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF3B82F6), Color(0xFF8B5CF6)],
+                    ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF3B82F6).withOpacity(0.3),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    strokeWidth: 3,
+                  ),
+                ),
+              ),
+              error: (e, s) => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade50,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: Colors.red.shade400,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      "Something went wrong",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF374151),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              data: (allFunds) {
+                final filtered = _searchFilter(allFunds);
                 return TabBarView(
                   controller: _tabController,
                   children: [
-                    _buildList(filtered.where(_isDirect).toList()),
-                    _buildList(filtered.where(_isRegular).toList()),
-                    _buildList(filtered.where(_isIdcw).toList()),
-                    _buildList(
+                    _buildFundList(filtered.where(_isDirect).toList()),
+                    _buildFundList(filtered.where(_isRegular).toList()),
+                    _buildFundList(filtered.where(_isIdcw).toList()),
+                    _buildFundList(
                       filtered
-                          .where(
-                            (f) =>
-                                !_isDirect(f) &&
-                                !_isRegular(f) &&
-                                !_isIdcw(f),
-                          )
+                          .where((f) =>
+                              !_isDirect(f) &&
+                              !_isRegular(f) &&
+                              !_isIdcw(f))
                           .toList(),
                     ),
                   ],
@@ -140,213 +469,42 @@ class _MutualFundSearchPageState extends ConsumerState<MutualFundSearchPage>
     );
   }
 
-  Widget _buildList(List<MutualFund> items) {
-    final list = _searchFilter(items);
-
-    if (_search.isEmpty) return _emptySearchUI();
-    if (list.isEmpty) return _noResultsUI();
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(15),
-      itemCount: list.length,
-      itemBuilder: (_, i) => _fundCard(list[i]),
-    );
-  }
-
-  Widget _emptySearchUI() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.search, size: 70, color: AppColors.primaryBlue),
-          SizedBox(height: 12),
-          Text(
-            "Search a mutual fund",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: Colors.black87,
-            ),
-          ),
-          SizedBox(height: 6),
-          Text(
-            "Start typing to explore funds",
-            style: TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _noResultsUI() {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.only(top: 80),
+  Widget _buildFundList(List<MutualFund> funds) {
+    if (funds.isEmpty) {
+      return Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off, size: 70, color: AppColors.primaryBlue),
-            SizedBox(height: 12),
-            Text(
-              "No matching results",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: Colors.black87,
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.search_off,
+                size: 48,
+                color: Colors.grey.shade400,
               ),
             ),
-            SizedBox(height: 6),
+            const SizedBox(height: 16),
             Text(
-              "Try searching something else",
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+              "No funds found",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade700,
+              ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // ⭐ ALWAYS SHOW BACKEND IMAGE
-  Widget _buildFundLogo(MutualFund f) {
-    if (f.mfImageUrl.isNotEmpty && f.mfImageUrl.startsWith("http")) {
-      return Image.network(
-        f.mfImageUrl,
-        fit: BoxFit.contain,
-        errorBuilder: (_, __, ___) => _fallbackLogo(f),
       );
     }
-    return _fallbackLogo(f);
-  }
 
-  Widget _fundCard(MutualFund f) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
+    return ListView.builder(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade300),
-        color: Colors.white,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey.shade200,
-                ),
-                clipBehavior: Clip.hardEdge,
-                child: _buildFundLogo(f),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  f.schemeName,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-
-          Text(
-            f.fundHouse,
-            style: const TextStyle(
-              color: AppColors.primaryBlue,
-              fontSize: 13,
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
-          Text(
-            f.schemeCategory,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
-          Text(
-            "Start Date • ${f.schemeStartDate}",
-            style: TextStyle(
-              color: Colors.grey.shade600,
-              fontSize: 12,
-            ),
-          ),
-
-          const SizedBox(height: 14),
-
-          Row(
-            children: [
-              _schemeChip(f.schemeType),
-              const Spacer(),
-              _learnMoreButton(f.schemeName),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _fallbackLogo(MutualFund f) {
-    return Center(
-      child: Text(
-        _getInitials(f.fundHouse),
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-          color: AppColors.primaryBlue,
-        ),
-      ),
-    );
-  }
-
-  Widget _schemeChip(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 10, 132, 255).withOpacity(0.12),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-          color: AppColors.primaryBlue,
-        ),
-      ),
-    );
-  }
-
-  Widget _learnMoreButton(String schemeName) {
-    return TextButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => FundDetailPage(fundName: schemeName),
-          ),
-        );
-      },
-      child: const Text(
-        "LEARN MORE",
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          color: AppColors.primaryBlue,
-        ),
-      ),
+      itemCount: funds.length,
+      itemBuilder: (_, i) => _fundCard(funds[i]),
     );
   }
 }

@@ -92,39 +92,55 @@ class _NewsScreenState extends ConsumerState<NewsScreen>
   }
 
   Widget _buildTabs() {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.only(bottom: 6),
-      child: TabBar(
-        controller: _tabController,
-        isScrollable: true,
-        tabAlignment: TabAlignment.start,
-
-        labelColor: AppColors.primaryBlue,
-        unselectedLabelColor: AppColors.textLight,
-
-        indicatorColor: AppColors.primaryBlue,
-        indicatorWeight: 2,
-        indicatorSize: TabBarIndicatorSize.label,
-
-        splashFactory: NoSplash.splashFactory,
-        overlayColor: MaterialStateProperty.all(Colors.transparent),
-
-        labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-        unselectedLabelStyle: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-        ),
-
-        onTap: (i) {
-          ref.read(newsFilterProvider.notifier).state = filterIds[i];
-          ref.refresh(newsProvider);
-        },
-
-        tabs: filters.map((t) => Tab(text: t)).toList(),
+  return Container(
+    width: double.infinity,
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Color(0xFF1E40AF),
+          Color(0xFF3B82F6),
+          Color(0xFF93C5FD),
+        ],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
       ),
-    );
-  }
+    ),
+    child: TabBar(
+      controller: _tabController,
+      isScrollable: true,
+      tabAlignment: TabAlignment.start,
+
+      // COLORS (same as Bulk Deals)
+      indicatorColor: Colors.white,
+      labelColor: Colors.white,
+      unselectedLabelColor: Colors.white70,
+
+      // Text Styles
+      labelStyle: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+      ),
+      unselectedLabelStyle: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+      ),
+
+      indicatorSize: TabBarIndicatorSize.label,
+      indicatorWeight: 2,
+
+      splashFactory: NoSplash.splashFactory,
+      overlayColor: MaterialStateProperty.all(Colors.transparent),
+
+      onTap: (i) {
+        ref.read(newsFilterProvider.notifier).state = filterIds[i];
+        ref.refresh(newsProvider);
+      },
+
+      tabs: filters.map((t) => Tab(text: t)).toList(),
+    ),
+  );
+}
+
 
   Widget _newsCard(NewsItem item) {
     return GestureDetector(
