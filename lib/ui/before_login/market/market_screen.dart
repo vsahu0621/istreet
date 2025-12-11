@@ -2,17 +2,21 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:istreet/providers/market_provider.dart';
+import 'package:istreet/ui/before_login/market/details/sector_detail.dart';
 import 'package:istreet/ui/common_widgets/common_appbar.dart';
 import 'package:istreet/ui/before_login/market/details/bulk_deals_detail.dart';
 import 'package:istreet/ui/before_login/market/details/block_deals_detail.dart';
 import 'package:istreet/ui/before_login/market/details/support_resistance_detail.dart';
 
 class MarketScreen extends ConsumerStatefulWidget {
-  const MarketScreen({super.key});
+  final VoidCallback? onLoginTap;
+
+  const MarketScreen({super.key, this.onLoginTap});
 
   @override
   ConsumerState<MarketScreen> createState() => _MarketScreenState();
 }
+
 
 class _MarketScreenState extends ConsumerState<MarketScreen>
     with SingleTickerProviderStateMixin {
@@ -888,146 +892,146 @@ class _MarketScreenState extends ConsumerState<MarketScreen>
             // TOP BUTTONS
             // ------------------------------------------------------------
             Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                     Navigator.push(
-                 context,
-                MaterialPageRoute(builder: (_) => const BulkDealsDetailScreen()),
-           );
-          },
-
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF10B981), Color(0xFF059669)],
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF10B981).withOpacity(0.3),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: const [
-                          Icon(
-                            Icons.trending_up,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            "Bulk Deals",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(width: 12),
-
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (_) => const BlockDealsDetailScreen()),
-  );
-},
-
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF3B82F6), Color(0xFF2563EB)],
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF3B82F6).withOpacity(0.3),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: const [
-                          Icon(
-                            Icons.view_module,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            "Block Deals",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(width: 12),
-
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (_) => const SupportResistanceDetailScreen()),
-  );
-},
-
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFA855F7), Color(0xFF9333EA)],
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFFA855F7).withOpacity(0.3),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: const [
-                          Icon(Icons.show_chart, color: Colors.white, size: 24),
-                          SizedBox(height: 4),
-                          Text(
-                            "S & R",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+  children: [
+    // BULK
+    Expanded(
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const BulkDealsDetailScreen()),
+          );
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF10B981), Color(0xFF059669)],
             ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            children: const [
+              Icon(Icons.trending_up, color: Colors.white),
+              SizedBox(height: 4),
+              Text("Bulk Deals",
+                  style: TextStyle(color: Colors.white, fontSize: 13)),
+            ],
+          ),
+        ),
+      ),
+    ),
+
+    const SizedBox(width: 12),
+
+    // BLOCK
+    Expanded(
+  child: GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => BlockDealsDetailScreen(
+            onLoginTap: widget.onLoginTap,   // ✅ FIXED
+          ),
+        ),
+      );
+    },
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF3B82F6), Color(0xFF2563EB)],
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: const [
+          Icon(Icons.view_module, color: Colors.white),
+          SizedBox(height: 4),
+          Text("Block Deals",
+              style: TextStyle(color: Colors.white, fontSize: 13)),
+        ],
+      ),
+    ),
+  ),
+),
+
+    const SizedBox(width: 12),
+
+   // S&R
+Expanded(
+  child: GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => SupportResistanceDetailScreen(
+            onLoginTap: widget.onLoginTap,   // ✅ ADDED
+          ),
+        ),
+      );
+    },
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFA855F7), Color(0xFF9333EA)],
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: const [
+          Icon(Icons.show_chart, color: Colors.white),
+          SizedBox(height: 4),
+          Text("S & R",
+              style: TextStyle(color: Colors.white, fontSize: 13)),
+        ],
+      ),
+    ),
+  ),
+),
+
+
+    const SizedBox(width: 12),
+
+    // ⭐ NEW SECTOR BOX
+    Expanded(
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const SectorDetailScreen()),
+          );
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFFF59E0B), Color(0xFFD97706)], // Yellow theme
+            ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            children: const [
+              Icon(Icons.category, color: Colors.white),
+              SizedBox(height: 4),
+              Text(
+                "Sector",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  ],
+),
+
 
             const SizedBox(height: 22),
 

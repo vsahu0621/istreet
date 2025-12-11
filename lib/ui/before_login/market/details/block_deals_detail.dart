@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:istreet/providers/market_provider.dart';
 
 class BlockDealsDetailScreen extends ConsumerWidget {
-  const BlockDealsDetailScreen({super.key});
+  final VoidCallback? onLoginTap;
+
+  const BlockDealsDetailScreen({super.key, this.onLoginTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -12,8 +14,6 @@ class BlockDealsDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-
-      // ✅ White AppBar + black arrow + black title
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -29,20 +29,17 @@ class BlockDealsDetailScreen extends ConsumerWidget {
 
       body: block.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-
-        error: (_, __) => const Center(child: Text("Error loading Block Deals")),
+        error: (_, __) =>
+            const Center(child: Text("Error loading Block Deals")),
 
         data: (list) {
-          // Always show only BLUR + LOCK (SAME AS POPUP)
           return Stack(
             children: [
-              // -----------------------------------------------------------------
-              // 🔵 PARTIAL VISIBLE DEALS (Same as popup → first 3 items)
-              // -----------------------------------------------------------------
+              // Visible blurred list
               ListView.builder(
                 padding: const EdgeInsets.all(16),
-                      itemCount: list.length,              
-                        itemBuilder: (context, index) {
+                itemCount: list.length,
+                itemBuilder: (context, index) {
                   final e = list[index];
                   final isBuy = e.type.toUpperCase() == "BUY";
 
@@ -53,18 +50,10 @@ class BlockDealsDetailScreen extends ConsumerWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: Colors.grey.shade200),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12.withOpacity(0.05),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // COMPANY + BUY/SELL TAG
                         Row(
                           children: [
                             Expanded(
@@ -96,9 +85,7 @@ class BlockDealsDetailScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
-
                         const SizedBox(height: 6),
-
                         Text(
                           "${e.date} • ${e.exchange}",
                           style: const TextStyle(
@@ -113,43 +100,38 @@ class BlockDealsDetailScreen extends ConsumerWidget {
                 },
               ),
 
-              // -----------------------------------------------------------------
-              // 🔵 FULL BLUR OVERLAY (Same popup UI)
-              // -----------------------------------------------------------------
+              // Blur overlay
               Positioned.fill(
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                    child: Container(
-                      color: Colors.white.withOpacity(0.7),
-                    ),
-                  ),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                  child: Container(color: Colors.white.withOpacity(0.7)),
                 ),
               ),
 
-              // -----------------------------------------------------------------
-              // 🔒 LOCK MESSAGE (Same popup UI)
-              // -----------------------------------------------------------------
+              // CLICK → Redirect to login
               Positioned.fill(
                 child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(
-                        Icons.lock,
-                        size: 45,
-                        color: Color(0xFF0056D6),
-                      ),
-                      SizedBox(height: 12),
-                      Text(
-                        "Login to view Block Deal data",
-                        style: TextStyle(
-                          color: Color(0xFF0056D6),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);   // close details screen
+                      onLoginTap?.call();       // go to login tab (BOTTOM NAV)
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(Icons.lock, size: 45, color: Color(0xFF0056D6)),
+                        SizedBox(height: 12),
+                        Text(
+                          "Login to view Block Deal data",
+                          style: TextStyle(
+                            color: Color(0xFF0056D6),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

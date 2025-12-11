@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:istreet/providers/market_provider.dart';
 
 class SupportResistanceDetailScreen extends ConsumerWidget {
-  const SupportResistanceDetailScreen({super.key});
+  final VoidCallback? onLoginTap;
+
+  const SupportResistanceDetailScreen({super.key, this.onLoginTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -13,7 +15,6 @@ class SupportResistanceDetailScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      // ✅ White AppBar + black arrow + black title
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -33,14 +34,13 @@ class SupportResistanceDetailScreen extends ConsumerWidget {
             const Center(child: Text("Error loading S/R data")),
 
         data: (list) {
-          // Always show blur + lock (same popup UX)
-final visible = list;
+          final visible = list; // show all items blurred
 
           return Stack(
             children: [
-              // ---------------------------------------------------------
-              // 🟣 PARTIAL VISIBLE CARDS (same as popup)
-              // ---------------------------------------------------------
+              // -------------------------------------------------------------------
+              // 🟣 Visible list (blurred)
+              // -------------------------------------------------------------------
               ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: visible.length,
@@ -104,9 +104,9 @@ final visible = list;
                 },
               ),
 
-              // ---------------------------------------------------------
-              // 🟣 BLUR OVERLAY (same as popup)
-              // ---------------------------------------------------------
+              // -------------------------------------------------------------------
+              // 🟣 Blur overlay
+              // -------------------------------------------------------------------
               Positioned.fill(
                 child: ClipRRect(
                   child: BackdropFilter(
@@ -118,29 +118,36 @@ final visible = list;
                 ),
               ),
 
-              // ---------------------------------------------------------
-              // 🟣 LOCK MESSAGE (same as popup)
-              // ---------------------------------------------------------
+              // -------------------------------------------------------------------
+              // 🟣 LOCK + LOGIN REDIRECT
+              // -------------------------------------------------------------------
               Positioned.fill(
                 child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(
-                        Icons.lock,
-                        size: 45,
-                        color: Color(0xFF0056D6),
-                      ),
-                      SizedBox(height: 12),
-                      Text(
-                        "Login to view Support & Resistance",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);   // close S&R screen
+                      onLoginTap?.call();       // redirect to login tab
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(
+                          Icons.lock,
+                          size: 45,
                           color: Color(0xFF0056D6),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 12),
+                        Text(
+                          "Login to view Support & Resistance",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF0056D6),
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

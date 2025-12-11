@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:istreet/config/theme/app_colors.dart';
+import 'package:istreet/ui/common_widgets/insidepage_appbar.dart';
 import '../../../data/models/news_model.dart';
 
 class NewsDetailPage extends StatelessWidget {
@@ -11,26 +12,8 @@ class NewsDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+       appBar: const InsidePageAppBar(),
 
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        titleSpacing: 0,
-        title: Text(
-          item.title.length > 25
-              ? "${item.title.substring(0, 25)}..."
-              : item.title,
-          style: const TextStyle(
-            color: Colors.black87,
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
 
       body: SingleChildScrollView(
         child: Column(
