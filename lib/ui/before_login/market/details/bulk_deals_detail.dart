@@ -73,21 +73,11 @@ class BulkDealsDetailScreen extends ConsumerWidget {
             }
 
             List filtered(int tab) {
-              final today = DateTime.now();
-              return list.where((e) {
-                final date = DateTime.tryParse(e.date) ?? today;
+          // Temporarily disable date filtering
+         // Because backend dates are old
+        return list;
+  }
 
-                if (tab == 0) {
-                  return date.year == today.year &&
-                      date.month == today.month &&
-                      date.day == today.day;
-                } else if (tab == 1) {
-                  return date.isAfter(today.subtract(const Duration(days: 3)));
-                } else {
-                  return date.isAfter(today.subtract(const Duration(days: 7)));
-                }
-              }).toList();
-            }
 
             return TabBarView(
               children: [

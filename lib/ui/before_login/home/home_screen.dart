@@ -8,7 +8,6 @@ class HomeScreen extends ConsumerWidget {
   final VoidCallback? onLoginTap;
   const HomeScreen({super.key, this.onLoginTap});
 
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final apiData = ref.watch(istreetConnectProvider);
@@ -16,7 +15,6 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: const CommonAppBar(),
-
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +24,6 @@ class HomeScreen extends ConsumerWidget {
             // --------------------------------------------------------
             Container(
               margin: const EdgeInsets.all(20),
-              height: 260,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
                 gradient: const LinearGradient(
@@ -40,9 +37,9 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Color(0xFF6366F1).withOpacity(0.4),
+                    color: const Color(0xFF6366F1).withOpacity(0.4),
                     blurRadius: 20,
-                    offset: Offset(0, 10),
+                    offset: const Offset(0, 10),
                   ),
                 ],
               ),
@@ -60,7 +57,6 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-
                   Positioned(
                     bottom: -20,
                     left: -20,
@@ -73,12 +69,10 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-
                   Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(28),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
                           'Not Only Data, All\nYou Need to Outperform',
@@ -137,7 +131,7 @@ class HomeScreen extends ConsumerWidget {
                   Expanded(
                     child: _quickFeaturePill(
                       icon: Icons.visibility,
-                      label: 'Transparency',
+                      label: 'Transparent',
                       gradient: const LinearGradient(
                         colors: [Color(0xFFF59E0B), Color(0xFFEF4444)],
                       ),
@@ -182,7 +176,7 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 20),
 
             // --------------------------------------------------------
-            // FEATURE CARDS WITH LOGIN NAVIGATION
+            // FEATURE CARDS
             // --------------------------------------------------------
             _premiumFeatureCard(
               context: context,
@@ -191,9 +185,6 @@ class HomeScreen extends ConsumerWidget {
               subtitle: "Real-time Analysis",
               description:
                   "Stay updated with real-time stock analysis and AI-driven insights. Deep technical analysis with expert insights to help you make data-backed decisions.",
-              gradient: const LinearGradient(
-                colors: [Color(0xFF1E293B), Color(0xFF334155)],
-              ),
               accentColor: const Color(0xFF10B981),
             ),
 
@@ -206,10 +197,7 @@ class HomeScreen extends ConsumerWidget {
               subtitle: "Portfolio Planning",
               description:
                   "Optimize your trading with proven strategies and portfolio planning. Our AI-powered strategies minimize risks and maximize gains for long-term success.",
-              gradient: const LinearGradient(
-                colors: [Color(0xFF3B82F6), Color(0xFF6366F1)],
-              ),
-              accentColor: const Color(0xFF60A5FA),
+              accentColor: const Color(0xFF3B82F6),
             ),
 
             const SizedBox(height: 16),
@@ -221,16 +209,13 @@ class HomeScreen extends ConsumerWidget {
               subtitle: "Bank-grade Protection",
               description:
                   "Trade with confidence using bank-grade encryption and fraud protection. Advanced security ensures safe transactions and encrypted personal data.",
-              gradient: const LinearGradient(
-                colors: [Color(0xFF1F2937), Color(0xFF374151)],
-              ),
-              accentColor: const Color(0xFF10B981),
+              accentColor: const Color(0xFF8B5CF6),
             ),
 
             const SizedBox(height: 30),
 
             // --------------------------------------------------------
-            // GLASSMORPHISM STATS CARD
+            // STATS CARD
             // --------------------------------------------------------
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -247,7 +232,7 @@ class HomeScreen extends ConsumerWidget {
                   BoxShadow(
                     color: Colors.black26,
                     blurRadius: 20,
-                    offset: Offset(0, 10),
+                    offset: const Offset(0, 10),
                   ),
                 ],
               ),
@@ -256,8 +241,7 @@ class HomeScreen extends ConsumerWidget {
                 children: [
                   const Row(
                     children: [
-                      Icon(Icons.auto_awesome,
-                          color: Color(0xFFFBBF24), size: 20),
+                      Icon(Icons.auto_awesome, color: Color(0xFFFBBF24), size: 20),
                       SizedBox(width: 8),
                       Text(
                         'Our Impact',
@@ -269,9 +253,7 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 24),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -302,7 +284,7 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 30),
 
             // --------------------------------------------------------
-            // WHY CHOOSE ISTREET
+            // WHY CHOOSE
             // --------------------------------------------------------
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -344,7 +326,7 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 30),
 
             // --------------------------------------------------------
-            // ANALYST CTA → LOGIN
+            // ANALYST CTA
             // --------------------------------------------------------
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -371,8 +353,7 @@ class HomeScreen extends ConsumerWidget {
                           color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: const Icon(Icons.people,
-                            color: Colors.white, size: 28),
+                        child: const Icon(Icons.people, color: Colors.white, size: 28),
                       ),
                       const SizedBox(width: 16),
                       const Expanded(
@@ -399,9 +380,7 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 20),
-
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -410,25 +389,17 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     child: Column(
                       children: [
-                        _analystBenefit(
-                            Icons.bar_chart, 'Monetize research & build revenue'),
+                        _analystBenefit(Icons.bar_chart, 'Monetize research & build revenue'),
                         const SizedBox(height: 12),
-                        _analystBenefit(Icons.speed,
-                            'Access powerful analytics tools'),
+                        _analystBenefit(Icons.speed, 'Access powerful analytics tools'),
                         const SizedBox(height: 12),
-                        _analystBenefit(Icons.people,
-                            'Connect with investors nationwide'),
+                        _analystBenefit(Icons.people, 'Connect with investors nationwide'),
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
                   ElevatedButton(
-                    onPressed: () {
-                      onLoginTap?.call();
-
-                    },
+                    onPressed: onLoginTap,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xFF8B5CF6),
@@ -459,7 +430,7 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 30),
 
             // --------------------------------------------------------
-            // FINAL CTA → LOGIN
+            // FINAL CTA
             // --------------------------------------------------------
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -479,8 +450,7 @@ class HomeScreen extends ConsumerWidget {
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(Icons.auto_awesome,
-                        color: Colors.white, size: 32),
+                    child: const Icon(Icons.auto_awesome, color: Colors.white, size: 32),
                   ),
                   const SizedBox(height: 16),
                   const Text(
@@ -502,10 +472,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () {
-                     onLoginTap?.call();
-;
-                    },
+                    onPressed: onLoginTap,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xFF1E40AF),
@@ -533,29 +500,33 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // --------------------------------------------------------
-  // QUICK FEATURE PILL WIDGET
-  // --------------------------------------------------------
   Widget _quickFeaturePill({
     required IconData icon,
     required String label,
     required Gradient gradient,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       decoration: BoxDecoration(
         gradient: gradient,
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          Icon(icon, color: Colors.white, size: 24),
-          const SizedBox(height: 6),
+          Icon(icon, color: Colors.white, size: 28),
+          const SizedBox(height: 8),
           Text(
             label,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -564,99 +535,100 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // --------------------------------------------------------
-  // FEATURE CARD WIDGET WITH LOGIN NAVIGATION
-  // --------------------------------------------------------
-Widget _premiumFeatureCard({
-  required BuildContext context,
-  required String image,
-  required String title,
-  required String subtitle,
-  required String description,
-  required Gradient gradient,
-  required Color accentColor,
-}) {
-  return Container(
-    margin: const EdgeInsets.symmetric(horizontal: 20),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.06),
-          blurRadius: 12,
-          offset: const Offset(0, 6),
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-
-        // 🔹 IMAGE BANNER
-        Container(
-          height: 160,
-          decoration: BoxDecoration(
+  Widget _premiumFeatureCard({
+    required BuildContext context,
+    required String image,
+    required String title,
+    required String subtitle,
+    required String description,
+    required Color accentColor,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image
+          ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            image: DecorationImage(
-              image: AssetImage(image),
+            child: Image.asset(
+              image,
+              height: 180,
+              width: double.infinity,
               fit: BoxFit.cover,
             ),
           ),
-        ),
 
-        // 🔹 TITLE BAR
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [accentColor, accentColor.withOpacity(0.7)],
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 4,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: accentColor,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF0F172A),
+                            ),
+                          ),
+                          Text(
+                            subtitle,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: accentColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  description,
+                  style: const TextStyle(
+                    color: Color(0xFF64748B),
+                    fontSize: 13,
+                    height: 1.5,
+                  ),
+                ),
+              ],
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
-                  fontSize: 11,
-                ),
-              ),
-            ],
-          ),
-        ),
+        ],
+      ),
+    );
+  }
 
-        // 🔹 DESCRIPTION (NO ARROW, NO TAP)
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            description,
-            style: const TextStyle(
-              color: Color(0xFF64748B),
-              fontSize: 13,
-              height: 1.45,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-  // --------------------------------------------------------
-  // STAT ITEM
-  // --------------------------------------------------------
   Widget _statItem({
     required IconData icon,
     required String value,
@@ -687,9 +659,6 @@ Widget _premiumFeatureCard({
     );
   }
 
-  // --------------------------------------------------------
-  // BENEFIT CARD
-  // --------------------------------------------------------
   Widget _benefitCard({
     required IconData icon,
     required String title,
@@ -698,13 +667,18 @@ Widget _premiumFeatureCard({
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [colors[0].withOpacity(0.1), colors[1].withOpacity(0.05)],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: colors[0].withOpacity(0.2), width: 2),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors[0].withOpacity(0.3), width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: colors[0].withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -713,7 +687,7 @@ Widget _premiumFeatureCard({
             height: 56,
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: colors),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(icon, color: Colors.white, size: 28),
           ),
@@ -746,9 +720,6 @@ Widget _premiumFeatureCard({
     );
   }
 
-  // --------------------------------------------------------
-  // ANALYST BENEFIT ROW
-  // --------------------------------------------------------
   Widget _analystBenefit(IconData icon, String text) {
     return Row(
       children: [
