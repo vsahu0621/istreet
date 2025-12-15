@@ -1204,3 +1204,4 @@ class _MarketScreenState extends ConsumerState<MarketScreen>
     );
   }
 }
+
