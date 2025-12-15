@@ -22,11 +22,45 @@ import '../after_login/generic_dashboard_screen.dart';
 // nav provider
 import 'package:istreet/providers/after_login/nav_mode_provider.dart';
 
+final GlobalKey<NavigatorState> marketNavKey =
+    GlobalKey<NavigatorState>();
+
+final GlobalKey<NavigatorState> newsNavKey =
+    GlobalKey<NavigatorState>();
+
+final GlobalKey<NavigatorState> mutualFundNavKey =
+    GlobalKey<NavigatorState>();
+
 class BottomNav extends ConsumerStatefulWidget {
   const BottomNav({super.key});
-
-  @override
+   @override
   ConsumerState<BottomNav> createState() => _BottomNavState();
+}
+Widget marketTab(VoidCallback onLoginTap) {
+  return Navigator(
+    key: marketNavKey, // 👈 ADD THIS
+    onGenerateRoute: (_) => MaterialPageRoute(
+      builder: (_) => MarketScreen(onLoginTap: onLoginTap),
+    ),
+  );
+}
+
+Widget newsTab() {
+  return Navigator(
+    key: newsNavKey, // 👈 ADD THIS
+    onGenerateRoute: (_) => MaterialPageRoute(
+      builder: (_) => const NewsScreen(),
+    ),
+  );
+}
+
+Widget mutualFundTab() {
+  return Navigator(
+    key: mutualFundNavKey,
+    onGenerateRoute: (_) => MaterialPageRoute(
+      builder: (_) => const MutualFundScreen(),
+    ),
+  );
 }
 
 class _BottomNavState extends ConsumerState<BottomNav> {
@@ -53,7 +87,8 @@ class _BottomNavState extends ConsumerState<BottomNav> {
     ref.read(navModeProvider.notifier).state = AppNavMode.mystreet;
     setState(() => selectedIndex = 0);
   }
-
+  
+  
   @override
   Widget build(BuildContext context) {
     final mode = ref.watch(navModeProvider);
@@ -66,9 +101,12 @@ class _BottomNavState extends ConsumerState<BottomNav> {
       // BEFORE LOGIN
       screens = [
         HomeScreen(onLoginTap: () => setState(() => selectedIndex = 5)),
-        MarketScreen(onLoginTap: () => setState(() => selectedIndex = 5)),
-        const NewsScreen(),
-        const MutualFundScreen(),
+          marketTab(() => setState(() => selectedIndex = 5)),
+
+       newsTab(),
+
+        mutualFundTab(),
+
         const MyFinanceScreen(),
         // LoginScreen must accept a callback that receives userType
         LoginScreen(onLoginSuccess: handleLoginSuccess),
@@ -103,9 +141,12 @@ class _BottomNavState extends ConsumerState<BottomNav> {
       // iStreet navbar: Home | Market | News | MFund | Finance | MyStreet
       screens = [
         HomeScreen(onLoginTap: () => setState(() => selectedIndex = 5)),
-        MarketScreen(onLoginTap: () => setState(() => selectedIndex = 5)),
-        const NewsScreen(),
-        const MutualFundScreen(),
+        marketTab(() => setState(() => selectedIndex = 5)),
+
+        newsTab(),
+
+       mutualFundTab(),
+
         const MyFinanceScreen(),
         // Last item when tapped should switch back to MyStreet mode
         MyStreetSwitchScreen(onSwitchBack: switchToMyStreet),
@@ -131,11 +172,29 @@ class _BottomNavState extends ConsumerState<BottomNav> {
       body: screens[selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
-        onTap: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
+          selectedItemColor: const Color(0xFF1E2A78),   // ✅ SAME COLOR
+           unselectedItemColor: Colors.grey,             // optional
+  backgroundColor: Colors.white,                
+      onTap: (index) {
+  if (index == selectedIndex) return;
+
+  // clear previous tab stack
+ if (selectedIndex == 1) {
+  marketNavKey.currentState?.popUntil((r) => r.isFirst);
+}
+if (selectedIndex == 2) {
+  newsNavKey.currentState?.popUntil((r) => r.isFirst);
+}
+if (selectedIndex == 3) {
+  mutualFundNavKey.currentState?.popUntil((r) => r.isFirst);
+}
+
+
+  setState(() {
+    selectedIndex = index;
+  });
+},
+
         type: BottomNavigationBarType.fixed,
         selectedFontSize: 11,
         unselectedFontSize: 11,

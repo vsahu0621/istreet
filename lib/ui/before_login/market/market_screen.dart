@@ -10,7 +10,7 @@ import 'package:istreet/ui/before_login/market/details/support_resistance_detail
 
 class MarketScreen extends ConsumerStatefulWidget {
   final VoidCallback? onLoginTap;
-
+  
   const MarketScreen({super.key, this.onLoginTap});
 
   @override
