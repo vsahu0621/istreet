@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:istreet/ui/common_widgets/common_appbar.dart';
+import 'package:istreet/ui/before_login/auth/sign_in_screen.dart';
 import '../../../providers/istreet_connect_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+  final VoidCallback? onLoginTap;
+  const HomeScreen({super.key, this.onLoginTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -12,19 +14,16 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-
       appBar: const CommonAppBar(),
-
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // --------------------------------------------------------
-            // UPDATED PREMIUM HERO BANNER (YOUR NEW TEXT)
+            // HERO BANNER
             // --------------------------------------------------------
             Container(
               margin: const EdgeInsets.all(20),
-              height: 260,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
                 gradient: const LinearGradient(
@@ -38,9 +37,9 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Color(0xFF6366F1).withOpacity(0.4),
+                    color: const Color(0xFF6366F1).withOpacity(0.4),
                     blurRadius: 20,
-                    offset: Offset(0, 10),
+                    offset: const Offset(0, 10),
                   ),
                 ],
               ),
@@ -58,8 +57,7 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-
-                  Positioned(   
+                  Positioned(
                     bottom: -20,
                     left: -20,
                     child: Container(
@@ -71,14 +69,11 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-
                   Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(28),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // ⭐ NEW HEADING
                         const Text(
                           'Not Only Data, All\nYou Need to Outperform',
                           style: TextStyle(
@@ -89,10 +84,7 @@ class HomeScreen extends ConsumerWidget {
                             letterSpacing: -0.5,
                           ),
                         ),
-
                         const SizedBox(height: 14),
-
-                        // ⭐ NEW SUBTITLE
                         Text(
                           'Discover the power of data-driven trading strategies and optimize your investments with advanced analytics.',
                           style: TextStyle(
@@ -126,7 +118,6 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-
                   Expanded(
                     child: _quickFeaturePill(
                       icon: Icons.touch_app,
@@ -137,11 +128,10 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-
                   Expanded(
                     child: _quickFeaturePill(
                       icon: Icons.visibility,
-                      label: 'Transparency',
+                      label: 'Transparent',
                       gradient: const LinearGradient(
                         colors: [Color(0xFFF59E0B), Color(0xFFEF4444)],
                       ),
@@ -153,12 +143,14 @@ class HomeScreen extends ConsumerWidget {
 
             const SizedBox(height: 30),
 
-            // Section header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+            // --------------------------------------------------------
+            // SECTION HEADER
+            // --------------------------------------------------------
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     'Core Features',
                     style: TextStyle(
@@ -183,50 +175,47 @@ class HomeScreen extends ConsumerWidget {
 
             const SizedBox(height: 20),
 
+            // --------------------------------------------------------
+            // FEATURE CARDS
+            // --------------------------------------------------------
             _premiumFeatureCard(
+              context: context,
               image: "assets/images/market.png",
               title: "Market Insights",
               subtitle: "Real-time Analysis",
               description:
                   "Stay updated with real-time stock analysis and AI-driven insights. Deep technical analysis with expert insights to help you make data-backed decisions.",
-              gradient: const LinearGradient(
-                colors: [Color(0xFF1E293B), Color(0xFF334155)],
-              ),
               accentColor: const Color(0xFF10B981),
             ),
 
             const SizedBox(height: 16),
 
             _premiumFeatureCard(
+              context: context,
               image: "assets/images/invest.png",
               title: "Investment Strategies",
               subtitle: "Portfolio Planning",
               description:
                   "Optimize your trading with proven strategies and portfolio planning. Our AI-powered strategies minimize risks and maximize gains for long-term success.",
-              gradient: const LinearGradient(
-                colors: [Color(0xFF3B82F6), Color(0xFF6366F1)],
-              ),
-              accentColor: const Color(0xFF60A5FA),
+              accentColor: const Color(0xFF3B82F6),
             ),
 
             const SizedBox(height: 16),
 
             _premiumFeatureCard(
+              context: context,
               image: "assets/images/secure.png",
               title: "Secure Transactions",
               subtitle: "Bank-grade Protection",
               description:
                   "Trade with confidence using bank-grade encryption and fraud protection. Advanced security ensures safe transactions and encrypted personal data.",
-              gradient: const LinearGradient(
-                colors: [Color(0xFF1F2937), Color(0xFF374151)],
-              ),
-              accentColor: const Color(0xFF10B981),
+              accentColor: const Color(0xFF8B5CF6),
             ),
 
             const SizedBox(height: 30),
 
             // --------------------------------------------------------
-            // GLASSMORPHISM IMPACT CARD
+            // STATS CARD
             // --------------------------------------------------------
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -243,20 +232,16 @@ class HomeScreen extends ConsumerWidget {
                   BoxShadow(
                     color: Colors.black26,
                     blurRadius: 20,
-                    offset: Offset(0, 10),
+                    offset: const Offset(0, 10),
                   ),
                 ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: const [
-                      Icon(
-                        Icons.auto_awesome,
-                        color: Color(0xFFFBBF24),
-                        size: 20,
-                      ),
+                  const Row(
+                    children: [
+                      Icon(Icons.auto_awesome, color: Color(0xFFFBBF24), size: 20),
                       SizedBox(width: 8),
                       Text(
                         'Our Impact',
@@ -269,7 +254,6 @@ class HomeScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 24),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -300,11 +284,11 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 30),
 
             // --------------------------------------------------------
-            // WHY CHOOSE ISTREET
+            // WHY CHOOSE
             // --------------------------------------------------------
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: const Text(
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
                 'Why Choose iStreet?',
                 style: TextStyle(
                   fontSize: 24,
@@ -317,26 +301,26 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 16),
 
             _benefitCard(
-              icon: Icons.insights, // 📊
+              icon: Icons.insights,
               title: 'Smart Market Insights',
               description: 'Real-time data made simple.',
-              colors: [Color(0xFF10B981), Color(0xFF059669)],
+              colors: const [Color(0xFF10B981), Color(0xFF059669)],
             ),
             const SizedBox(height: 12),
 
             _benefitCard(
-              icon: Icons.devices, // 📱
+              icon: Icons.devices,
               title: 'Easy-to-Use Platform',
               description: 'Clean, smooth experience.',
-              colors: [Color(0xFF3B82F6), Color(0xFF2563EB)],
+              colors: const [Color(0xFF3B82F6), Color(0xFF2563EB)],
             ),
             const SizedBox(height: 12),
 
             _benefitCard(
-              icon: Icons.visibility, // 🔍
+              icon: Icons.visibility,
               title: 'Transparent Research Tools',
               description: 'Clear insights without the noise.',
-              colors: [Color(0xFFA855F7), Color(0xFF9333EA)],
+              colors: const [Color(0xFFA855F7), Color(0xFF9333EA)],
             ),
 
             const SizedBox(height: 30),
@@ -369,14 +353,9 @@ class HomeScreen extends ConsumerWidget {
                           color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: const Icon(
-                          Icons.people,
-                          color: Colors.white,
-                          size: 28,
-                        ),
+                        child: const Icon(Icons.people, color: Colors.white, size: 28),
                       ),
                       const SizedBox(width: 16),
-
                       const Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,7 +373,6 @@ class HomeScreen extends ConsumerWidget {
                               style: TextStyle(
                                 color: Colors.white70,
                                 fontSize: 14,
-                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
@@ -402,9 +380,7 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 20),
-
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -413,28 +389,17 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     child: Column(
                       children: [
-                        _analystBenefit(
-                          Icons.bar_chart,
-                          'Monetize research & build revenue',
-                        ),
+                        _analystBenefit(Icons.bar_chart, 'Monetize research & build revenue'),
                         const SizedBox(height: 12),
-                        _analystBenefit(
-                          Icons.speed,
-                          'Access powerful analytics tools',
-                        ),
+                        _analystBenefit(Icons.speed, 'Access powerful analytics tools'),
                         const SizedBox(height: 12),
-                        _analystBenefit(
-                          Icons.people,
-                          'Connect with investors nationwide',
-                        ),
+                        _analystBenefit(Icons.people, 'Connect with investors nationwide'),
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: onLoginTap,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xFF8B5CF6),
@@ -465,7 +430,7 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 30),
 
             // --------------------------------------------------------
-            // FINAL CTA CARD
+            // FINAL CTA
             // --------------------------------------------------------
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -480,20 +445,14 @@ class HomeScreen extends ConsumerWidget {
                 children: [
                   Container(
                     width: 54,
-
                     height: 54,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(
-                      Icons.auto_awesome,
-                      color: Colors.white,
-                      size: 32,
-                    ),
+                    child: const Icon(Icons.auto_awesome, color: Colors.white, size: 32),
                   ),
                   const SizedBox(height: 16),
-
                   const Text(
                     'Welcome to iStreet!',
                     style: TextStyle(
@@ -502,23 +461,18 @@ class HomeScreen extends ConsumerWidget {
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
                   Text(
                     'Your finance journey begins here.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 14,
-                      height: 1.5,
                     ),
                   ),
-
                   const SizedBox(height: 24),
-
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: onLoginTap,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xFF1E40AF),
@@ -546,29 +500,33 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // --------------------------------------------------------
-  // QUICK FEATURE PILL
-  // --------------------------------------------------------
   Widget _quickFeaturePill({
     required IconData icon,
     required String label,
     required Gradient gradient,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       decoration: BoxDecoration(
         gradient: gradient,
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          Icon(icon, color: Colors.white, size: 24),
-          const SizedBox(height: 6),
+          Icon(icon, color: Colors.white, size: 28),
+          const SizedBox(height: 8),
           Text(
             label,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -577,15 +535,12 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // --------------------------------------------------------
-  // FEATURE CARD WITH IMAGE (FINAL VERSION)
-  // --------------------------------------------------------
   Widget _premiumFeatureCard({
+    required BuildContext context,
     required String image,
     required String title,
     required String subtitle,
     required String description,
-    required Gradient gradient,
     required Color accentColor,
   }) {
     return Container(
@@ -595,101 +550,75 @@ class HomeScreen extends ConsumerWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔹 IMAGE (TOP COVER)
-          Container(
-            height: 160,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(20),
-              ),
-              image: DecorationImage(
-                image: AssetImage(image),
-                fit: BoxFit.cover,
-              ),
+          // Image
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            child: Image.asset(
+              image,
+              height: 180,
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
           ),
 
-          // 🔹 TITLE BAR
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [accentColor, accentColor.withOpacity(0.7)],
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
-                    fontSize: 11,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // 🔹 DESCRIPTION + LEARN MORE (RIGHT SIDE)
+          // Content
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 4,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: accentColor,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF0F172A),
+                            ),
+                          ),
+                          Text(
+                            subtitle,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: accentColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
                 Text(
                   description,
                   style: const TextStyle(
                     color: Color(0xFF64748B),
                     fontSize: 13,
-                    height: 1.45,
-                  ),
-                ),
-                const SizedBox(height: 14),
-
-                // *** FINAL — LEARN MORE RIGHT SIDE ***
-                GestureDetector(
-                  onTap: () {},
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Text(
-                          "Learn More",
-                          style: TextStyle(
-                            color: Color(0xFF0F172A),
-                            fontSize: 13,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        SizedBox(width: 4),
-                        Icon(
-                          Icons.arrow_forward,
-                          size: 14,
-                          color: Color(0xFF0F172A),
-                        ),
-                      ],
-                    ),
+                    height: 1.5,
                   ),
                 ),
               ],
@@ -700,9 +629,6 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // --------------------------------------------------------
-  // STAT ITEM
-  // --------------------------------------------------------
   Widget _statItem({
     required IconData icon,
     required String value,
@@ -727,16 +653,12 @@ class HomeScreen extends ConsumerWidget {
           style: TextStyle(
             color: Colors.white.withOpacity(0.7),
             fontSize: 12,
-            fontWeight: FontWeight.w600,
           ),
         ),
       ],
     );
   }
 
-  // --------------------------------------------------------
-  // BENEFIT CARD
-  // --------------------------------------------------------
   Widget _benefitCard({
     required IconData icon,
     required String title,
@@ -745,13 +667,18 @@ class HomeScreen extends ConsumerWidget {
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [colors[0].withOpacity(0.1), colors[1].withOpacity(0.05)],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: colors[0].withOpacity(0.2), width: 2),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors[0].withOpacity(0.3), width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: colors[0].withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -760,7 +687,7 @@ class HomeScreen extends ConsumerWidget {
             height: 56,
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: colors),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(icon, color: Colors.white, size: 28),
           ),
@@ -783,21 +710,16 @@ class HomeScreen extends ConsumerWidget {
                   style: const TextStyle(
                     fontSize: 12,
                     color: Color(0xFF64748B),
-                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
           ),
-        //  Icon(Icons.arrow_forward_ios, size: 16, color: colors[0]),
         ],
       ),
     );
   }
 
-  // --------------------------------------------------------
-  // ANALYST BENEFIT ROW
-  // --------------------------------------------------------
   Widget _analystBenefit(IconData icon, String text) {
     return Row(
       children: [

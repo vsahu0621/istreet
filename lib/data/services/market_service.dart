@@ -45,7 +45,7 @@ class MarketService {
 
     return data.map((e) => BulkDeal.fromJson(e)).toList();
   }
-
+   
   // ------------------ BLOCK DEALS ------------------
   static Future<List<BlockDeal>> fetchBlockDeals() async {
     final url = Uri.parse("$_base/get_blockdeal_api/");

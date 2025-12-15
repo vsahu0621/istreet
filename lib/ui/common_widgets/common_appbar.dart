@@ -21,7 +21,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w800,
-              color: AppColors.primaryBlue, // Theme Blue
+            color: Color(0xFF1E2A78), // Theme Blue
             ),
           ),
         ],
