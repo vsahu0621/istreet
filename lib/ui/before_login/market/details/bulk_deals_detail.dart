@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:istreet/providers/market_provider.dart';
+import 'package:istreet/ui/common_widgets/insidepage_appbar.dart';
 
 class BulkDealsDetailScreen extends ConsumerWidget {
   const BulkDealsDetailScreen({super.key});
@@ -15,50 +16,42 @@ class BulkDealsDetailScreen extends ConsumerWidget {
         backgroundColor: Colors.white,
 
         // ✅ AppBar completely white
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(
+            108,
+          ), // 60 (AppBar) + 48 (TabBar)
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const InsidePageAppBar(title: "Bulk Deals", showTitle: true),
 
-          title: const Text(
-            "Bulk Deals",
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.black,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-
-          iconTheme: const IconThemeData(color: Colors.black),
-
-          // ❌ Don't put white TabBar directly here  
-          // ✅ Use PreferredSize widget with gradient container
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(48),
-            child: Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color(0xFF1E40AF),
-                    Color(0xFF3B82F6),
-                    Color(0xFF93C5FD),
+              // 👇 SAME TAB BAR (unchanged)
+              Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF1E40AF),
+                      Color(0xFF3B82F6),
+                      Color(0xFF93C5FD),
+                    ],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                ),
+                child: const TabBar(
+                  indicatorColor: Colors.white,
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.white70,
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  tabs: [
+                    Tab(text: "Today"),
+                    Tab(text: "Last 3 Days"),
+                    Tab(text: "Last Week"),
                   ],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
                 ),
               ),
-              child: const TabBar(
-                indicatorColor: Colors.white,
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white70,
-                labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                tabs: [
-                  Tab(text: "Today"),
-                  Tab(text: "Last 3 Days"),
-                  Tab(text: "Last Week"),
-                ],
-              ),
-            ),
+            ],
           ),
         ),
 
@@ -73,11 +66,10 @@ class BulkDealsDetailScreen extends ConsumerWidget {
             }
 
             List filtered(int tab) {
-          // Temporarily disable date filtering
-         // Because backend dates are old
-        return list;
-  }
-
+              // Temporarily disable date filtering
+              // Because backend dates are old
+              return list;
+            }
 
             return TabBarView(
               children: [
@@ -133,10 +125,13 @@ class BulkDealsDetailScreen extends ConsumerWidget {
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color:
-                          isBuy ? Colors.green.shade100 : Colors.red.shade100,
+                      color: isBuy
+                          ? Colors.green.shade100
+                          : Colors.red.shade100,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
@@ -166,8 +161,10 @@ class BulkDealsDetailScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Qty: ${e.quantity}",
-                      style: const TextStyle(fontSize: 13)),
+                  Text(
+                    "Qty: ${e.quantity}",
+                    style: const TextStyle(fontSize: 13),
+                  ),
                   Text(
                     "₹${e.price}",
                     style: const TextStyle(

@@ -17,9 +17,8 @@ class IStreetApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'iStreet',
       theme: AppTheme.light,
-     // home: const BottomNav(),
+      // home: const BottomNav(),
       home: const SplashScreen(),
-
     );
   }
 }

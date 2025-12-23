@@ -3,6 +3,7 @@
 --------------------------------------------------------- */
 
 import 'package:flutter/material.dart';
+import 'package:istreet/config/theme/app_colors.dart';
 import 'package:istreet/ui/common_widgets/common_appbar.dart';
 
 class RecommendationsScreen extends StatelessWidget {
@@ -11,11 +12,23 @@ class RecommendationsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: const CommonAppBar(),
+      appBar: const CommonAppBar(),
       body: const Center(
-        child: Text(
-          "Recommendations Screen",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.construction, size: 48,  color: AppColors.iStreetBlue),
+            SizedBox(height: 12),
+            Text(
+              "This feature is under development",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 6),
+            Text(
+              "We are working on it. Stay tuned!",
+              style: TextStyle(color: Colors.grey),
+            ),
+          ],
         ),
       ),
     );

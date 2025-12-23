@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:istreet/data/models/auth_response.dart';
 import 'package:istreet/data/services/auth_api.dart';
+import 'package:istreet/data/services/auth_storage.dart';
 
 class AuthState {
   final bool isLoading;
@@ -11,8 +12,8 @@ class AuthState {
   final String? name;
   final String? email;
 
-  final String? userType;     // NEW
-  final String? dashboard;    // NEW
+  final String? userType; // NEW
+  final String? dashboard; // NEW
 
   const AuthState({
     this.isLoading = false,
@@ -46,8 +47,8 @@ class AuthState {
       name: name ?? this.name,
       email: email ?? this.email,
 
-      userType: userType ?? this.userType,      // NEW
-      dashboard: dashboard ?? this.dashboard,   // NEW
+      userType: userType ?? this.userType, // NEW
+      dashboard: dashboard ?? this.dashboard, // NEW
     );
   }
 }
@@ -64,21 +65,27 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
 
-      final AuthResponse res = await _api.login(email: email, password: password);
+      final AuthResponse res = await _api.login(
+        email: email,
+        password: password,
+      );
 
       if (res.status == 'success') {
         state = state.copyWith(
           isLoading: false,
           isLoggedIn: true,
-          errorMessage: null,
           token: res.token,
           refreshToken: res.refresh,
           name: res.name,
           email: res.email,
-
-          userType: res.userType,        // NEW
-          dashboard: res.dashboard,      // NEW
+          userType: res.userType,
+          dashboard: res.dashboard,
         );
+
+        // 🔑 SAVE FOR NEXT APP START
+        await AuthStorage.setLoggedIn(true);
+        await AuthStorage.setToken(res.token!);
+
         return res.message;
       } else {
         state = state.copyWith(
@@ -115,16 +122,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
 
       if (res.status == 'success') {
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: null,
-        );
+        state = state.copyWith(isLoading: false, errorMessage: null);
         return res.message;
       } else {
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: res.message,
-        );
+        state = state.copyWith(isLoading: false, errorMessage: res.message);
         return res.message;
       }
     } catch (e) {

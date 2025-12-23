@@ -1081,7 +1081,7 @@ Expanded(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Live • ${latest.date}",
+                                "• ${latest.date}",
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w700,
                                 ),

@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:istreet/providers/after_login/nav_mode_provider.dart';
 import 'package:istreet/providers/market_provider.dart';
 import 'package:istreet/providers/auth_provider.dart';
+import 'package:istreet/ui/common_widgets/insidepage_appbar.dart';
 
 class BlockDealsDetailScreen extends ConsumerWidget {
   final VoidCallback? onLoginTap;
@@ -12,23 +14,18 @@ class BlockDealsDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final block = ref.watch(blockDealsProvider);
-    final isLoggedIn = ref.watch(authProvider).isLoggedIn;
+    //  final isLoggedIn = ref.watch(authProvider).isLoggedIn;
 
+    final mode = ref.watch(navModeProvider);
+    final isGuest = mode == AppNavMode.guest;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
-          "Block Deals",
-          style: TextStyle(fontWeight: FontWeight.w800, color: Colors.black),
-        ),
-      ),
+      appBar: const InsidePageAppBar(title: "Block Deals", showTitle: true),
 
       body: block.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text("Error loading Block Deals")),
+        error: (_, __) =>
+            const Center(child: Text("Error loading Block Deals")),
 
         data: (list) {
           return Stack(
@@ -55,14 +52,13 @@ class BlockDealsDetailScreen extends ConsumerWidget {
                           color: Colors.black.withOpacity(0.04),
                           blurRadius: 6,
                           offset: const Offset(0, 3),
-                        )
+                        ),
                       ],
                     ),
 
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         /// ------------------ TITLE + BUY/SELL ------------------
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,7 +165,7 @@ class BlockDealsDetailScreen extends ConsumerWidget {
                                   const Text(
                                     "Quantity",
                                     style: TextStyle(
-                                     color: Colors.grey,
+                                      color: Colors.grey,
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -193,7 +189,7 @@ class BlockDealsDetailScreen extends ConsumerWidget {
                                   const Text(
                                     "Avg Price",
                                     style: TextStyle(
-                                     color: Colors.grey,
+                                      color: Colors.grey,
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -219,26 +215,26 @@ class BlockDealsDetailScreen extends ConsumerWidget {
               /// ------------------------------------------
               ///  BEFORE LOGIN = LOCK + BLUR OVERLAY
               /// ------------------------------------------
-              if (!isLoggedIn)
+              //      if (!isLoggedIn)
+              if (isGuest)
                 Positioned.fill(
                   child: ClipRRect(
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                      child: Container(
-                        color: Colors.white.withOpacity(0.70),
-                      ),
+                      child: Container(color: Colors.white.withOpacity(0.70)),
                     ),
                   ),
                 ),
 
-              if (!isLoggedIn)
+              //     if (!isLoggedIn)
+              if (isGuest)
                 Positioned.fill(
                   child: Center(
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.pop(context);
-                        onLoginTap?.call();
+                        onLoginTap?.call(); // sirf login screen open karo
                       },
+
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: const [
@@ -249,8 +245,6 @@ class BlockDealsDetailScreen extends ConsumerWidget {
                             style: TextStyle(
                               fontSize: 16,
                               color: Color(0xFF0056D6),
-                              fontWeight: FontWeight.w800,
-                              decoration: TextDecoration.underline,
                             ),
                           ),
                         ],

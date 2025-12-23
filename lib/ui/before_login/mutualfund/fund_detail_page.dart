@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:istreet/config/theme/app_colors.dart';
 import 'package:istreet/providers/fund_chart_provider.dart';
+import 'package:istreet/ui/common_widgets/insidepage_appbar.dart';
 
 class FundDetailPage extends ConsumerStatefulWidget {
   final String fundName;
@@ -46,23 +47,24 @@ class _FundDetailPageState extends ConsumerState<FundDetailPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 26),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          widget.fundName,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w700,
-            fontSize: 18,
-          ),
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   elevation: 0,
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back, color: Colors.black, size: 26),
+      //     onPressed: () => Navigator.pop(context),
+      //   ),
+      //   title: Text(
+      //     widget.fundName,
+      //     overflow: TextOverflow.ellipsis,
+      //     style: const TextStyle(
+      //       color: Colors.black,
+      //       fontWeight: FontWeight.w700,
+      //       fontSize: 18,
+      //     ),
+      //   ),
+      // ),
+       appBar: const InsidePageAppBar(),
       body: async.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, s) => Center(child: Text("Error: $e")),
