@@ -8,6 +8,7 @@ import 'package:istreet/data/services/auth_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // 🔥 MISSING (MAIN FIX)
 import 'package:istreet/providers/after_login/nav_mode_provider.dart';
 import 'package:istreet/ui/navigation/navigation_screen.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -77,11 +78,21 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
       final isLoggedIn = await AuthStorage.isLoggedIn();
       final token = await AuthStorage.getToken();
+      final refresh = await AuthStorage.getRefreshToken();
+      final storedUserType = await AuthStorage.getUserType();
 
-      if (isLoggedIn && token != null) {
+      if (isLoggedIn && token != null && refresh != null) {
+        final decoded = JwtDecoder.decode(token);
+        final userId = int.tryParse(decoded['user_id'].toString());
         ref.read(authProvider.notifier).state = ref
             .read(authProvider)
-            .copyWith(isLoggedIn: true, token: token);
+            .copyWith(
+              isLoggedIn: true,
+              token: token,
+              refreshToken: refresh,
+              userId: userId,
+              userType: storedUserType,
+            );
       }
 
       ref.read(navModeProvider.notifier).state = isLoggedIn

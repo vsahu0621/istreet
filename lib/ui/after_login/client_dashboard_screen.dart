@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:istreet/ui/common_widgets/common_appbar.dart';
 
 class ClientDashboardScreen extends StatelessWidget {
   const ClientDashboardScreen({super.key});
@@ -7,13 +8,7 @@ class ClientDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text(
-          "Client Dashboard",
-          style: TextStyle(color: Color(0xFF1E40AF), fontWeight: FontWeight.bold),
-        ),
-      ),
+      appBar: const CommonAppBar(showLogout: true),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

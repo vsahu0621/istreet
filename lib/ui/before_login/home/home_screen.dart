@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:istreet/config/theme/app_colors.dart';
+import 'package:istreet/core/utils/responsive.dart';
 import 'package:istreet/ui/common_widgets/common_appbar.dart';
 import 'package:istreet/ui/before_login/auth/sign_in_screen.dart';
 import '../../../providers/istreet_connect_provider.dart';
@@ -11,9 +13,10 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final apiData = ref.watch(istreetConnectProvider);
-
+    final scale = Responsive.scale(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
+
       appBar: const CommonAppBar(),
       body: SingleChildScrollView(
         child: Column(
@@ -28,16 +31,17 @@ class HomeScreen extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(24),
                 gradient: const LinearGradient(
                   colors: [
-                    Color(0xFF1E40AF),
-                    Color(0xFF6366F1),
-                    Color(0xFF8B5CF6),
+                    AppColors.deepBlue,
+                    AppColors.indigo,
+                    AppColors.violet,
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF6366F1).withOpacity(0.4),
+                    color: AppColors.indigo.withOpacity(0.4),
+
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -113,7 +117,10 @@ class HomeScreen extends ConsumerWidget {
                       icon: Icons.lightbulb_outline,
                       label: 'Insights',
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF10B981), Color(0xFF059669)],
+                        colors: [
+                          AppColors.successGreen,
+                          AppColors.successGreenDark,
+                        ],
                       ),
                     ),
                   ),
@@ -123,7 +130,7 @@ class HomeScreen extends ConsumerWidget {
                       icon: Icons.touch_app,
                       label: 'Usability',
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF3B82F6), Color(0xFF2563EB)],
+                        colors: [AppColors.infoBlue, AppColors.infoBlueDark],
                       ),
                     ),
                   ),
@@ -133,7 +140,7 @@ class HomeScreen extends ConsumerWidget {
                       icon: Icons.visibility,
                       label: 'Transparent',
                       gradient: const LinearGradient(
-                        colors: [Color(0xFFF59E0B), Color(0xFFEF4444)],
+                        colors: [AppColors.warningYellow, AppColors.dangerRed],
                       ),
                     ),
                   ),
@@ -156,7 +163,8 @@ class HomeScreen extends ConsumerWidget {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFF0F172A),
+                      color: AppColors.textDark,
+
                       letterSpacing: -0.5,
                     ),
                   ),
@@ -165,7 +173,8 @@ class HomeScreen extends ConsumerWidget {
                     'Everything you need to succeed',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Color(0xFF64748B),
+                      color: AppColors.textLight,
+
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -185,7 +194,7 @@ class HomeScreen extends ConsumerWidget {
               subtitle: "Real-time Analysis",
               description:
                   "Stay updated with real-time stock analysis and AI-driven insights. Deep technical analysis with expert insights to help you make data-backed decisions.",
-              accentColor: const Color(0xFF10B981),
+              accentColor: AppColors.successGreen,
             ),
 
             const SizedBox(height: 16),
@@ -197,7 +206,7 @@ class HomeScreen extends ConsumerWidget {
               subtitle: "Portfolio Planning",
               description:
                   "Optimize your trading with proven strategies and portfolio planning. Our AI-powered strategies minimize risks and maximize gains for long-term success.",
-              accentColor: const Color(0xFF3B82F6),
+              accentColor: AppColors.infoBlue,
             ),
 
             const SizedBox(height: 16),
@@ -209,7 +218,7 @@ class HomeScreen extends ConsumerWidget {
               subtitle: "Bank-grade Protection",
               description:
                   "Trade with confidence using bank-grade encryption and fraud protection. Advanced security ensures safe transactions and encrypted personal data.",
-              accentColor: const Color(0xFF8B5CF6),
+              accentColor: AppColors.violet,
             ),
 
             const SizedBox(height: 30),
@@ -223,10 +232,7 @@ class HomeScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
                 gradient: const LinearGradient(
-                  colors: [
-                    Color.fromARGB(255, 126, 175, 255),
-                    Color.fromARGB(255, 60, 134, 238),
-                  ],
+                  colors: [AppColors.secondaryBlue, AppColors.infoBlue],
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -241,7 +247,12 @@ class HomeScreen extends ConsumerWidget {
                 children: [
                   const Row(
                     children: [
-                      Icon(Icons.auto_awesome, color: Color(0xFFFBBF24), size: 20),
+                      Icon(
+                        Icons.auto_awesome,
+                        color: AppColors.warningYellow,
+
+                        size: 20,
+                      ),
                       SizedBox(width: 8),
                       Text(
                         'Our Impact',
@@ -261,19 +272,19 @@ class HomeScreen extends ConsumerWidget {
                         icon: Icons.people,
                         value: '5+',
                         label: 'Analysts',
-                        color: const Color.fromRGBO(8, 109, 232, 1),
+                        color: AppColors.statsBlue,
                       ),
                       _statItem(
                         icon: Icons.trending_up,
                         value: '10+',
                         label: 'Investors',
-                        color: const Color(0xFF4ADE80),
+                        color: AppColors.statsGreen,
                       ),
                       _statItem(
                         icon: Icons.bar_chart,
                         value: '82%',
                         label: 'Success',
-                        color: const Color(0xFFA78BFA),
+                        color: AppColors.statsPurple,
                       ),
                     ],
                   ),
@@ -293,7 +304,7 @@ class HomeScreen extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.textDark,
                 ),
               ),
             ),
@@ -304,7 +315,10 @@ class HomeScreen extends ConsumerWidget {
               icon: Icons.insights,
               title: 'Smart Market Insights',
               description: 'Real-time data made simple.',
-              colors: const [Color(0xFF10B981), Color(0xFF059669)],
+              colors: const [
+                AppColors.successGreen,
+                AppColors.successGreenDark,
+              ],
             ),
             const SizedBox(height: 12),
 
@@ -312,7 +326,7 @@ class HomeScreen extends ConsumerWidget {
               icon: Icons.devices,
               title: 'Easy-to-Use Platform',
               description: 'Clean, smooth experience.',
-              colors: const [Color(0xFF3B82F6), Color(0xFF2563EB)],
+              colors: const [AppColors.infoBlue, AppColors.infoBlueDark],
             ),
             const SizedBox(height: 12),
 
@@ -320,7 +334,7 @@ class HomeScreen extends ConsumerWidget {
               icon: Icons.visibility,
               title: 'Transparent Research Tools',
               description: 'Clear insights without the noise.',
-              colors: const [Color(0xFFA855F7), Color(0xFF9333EA)],
+              colors: const [AppColors.purple, AppColors.purpleDark],
             ),
 
             const SizedBox(height: 30),
@@ -335,9 +349,9 @@ class HomeScreen extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(24),
                 gradient: const LinearGradient(
                   colors: [
-                    Color(0xFF6366F1),
-                    Color(0xFF8B5CF6),
-                    Color.fromARGB(255, 121, 88, 238),
+                    AppColors.indigo,
+                    AppColors.violet,
+                    AppColors.deepBlue,
                   ],
                 ),
               ),
@@ -353,7 +367,11 @@ class HomeScreen extends ConsumerWidget {
                           color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: const Icon(Icons.people, color: Colors.white, size: 28),
+                        child: const Icon(
+                          Icons.people,
+                          color: Colors.white,
+                          size: 28,
+                        ),
                       ),
                       const SizedBox(width: 16),
                       const Expanded(
@@ -389,11 +407,20 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     child: Column(
                       children: [
-                        _analystBenefit(Icons.bar_chart, 'Monetize research & build revenue'),
+                        _analystBenefit(
+                          Icons.bar_chart,
+                          'Monetize research & build revenue',
+                        ),
                         const SizedBox(height: 12),
-                        _analystBenefit(Icons.speed, 'Access powerful analytics tools'),
+                        _analystBenefit(
+                          Icons.speed,
+                          'Access powerful analytics tools',
+                        ),
                         const SizedBox(height: 12),
-                        _analystBenefit(Icons.people, 'Connect with investors nationwide'),
+                        _analystBenefit(
+                          Icons.people,
+                          'Connect with investors nationwide',
+                        ),
                       ],
                     ),
                   ),
@@ -438,7 +465,7 @@ class HomeScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF1E40AF), Color(0xFF3B82F6)],
+                  colors: [AppColors.deepBlue, AppColors.infoBlue],
                 ),
               ),
               child: Column(
@@ -450,7 +477,11 @@ class HomeScreen extends ConsumerWidget {
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(Icons.auto_awesome, color: Colors.white, size: 32),
+                    child: const Icon(
+                      Icons.auto_awesome,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   const Text(
@@ -650,10 +681,7 @@ class HomeScreen extends ConsumerWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.7),
-            fontSize: 12,
-          ),
+          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12),
         ),
       ],
     );

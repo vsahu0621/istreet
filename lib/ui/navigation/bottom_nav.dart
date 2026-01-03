@@ -2,77 +2,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:istreet/config/theme/app_colors.dart';
-import 'package:istreet/ui/after_login/generic/advisory_screen.dart';
+
+// GENERIC AFTER LOGIN
 import 'package:istreet/ui/after_login/generic/community.dart';
 import 'package:istreet/ui/after_login/generic/recommendations_screen.dart';
-import 'package:istreet/ui/after_login/generic/subscription_screen.dart';
 
-// import your existing screens (adjust paths if needed)
+// BEFORE LOGIN
 import '../before_login/home/home_screen.dart';
 import '../before_login/market/market_screen.dart';
 import '../before_login/news/news_screen.dart';
 import '../before_login/mutualfund/mutual_fund_screen.dart';
-import '../before_login/finance/my_finance_screen.dart';
 import '../before_login/auth/sign_in_screen.dart';
 
+// AFTER LOGIN DASHBOARDS
 import '../after_login/admin_dashboard_screen.dart';
 import '../after_login/advisor_dashboard_screen.dart';
 import '../after_login/analyst_dashboard_screen.dart';
 import '../after_login/client_dashboard_screen.dart';
 import '../after_login/generic_dashboard_screen.dart';
 
-// nav provider
+// PROVIDERS
 import 'package:istreet/providers/after_login/nav_mode_provider.dart';
+import 'package:istreet/providers/auth_provider.dart';
 
 final GlobalKey<NavigatorState> marketNavKey = GlobalKey<NavigatorState>();
-
 final GlobalKey<NavigatorState> newsNavKey = GlobalKey<NavigatorState>();
-
 final GlobalKey<NavigatorState> mutualFundNavKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> communityNavKey = GlobalKey<NavigatorState>();
 
 class BottomNav extends ConsumerStatefulWidget {
   const BottomNav({super.key});
+
   @override
   ConsumerState<BottomNav> createState() => _BottomNavState();
-}
-
-Widget marketTab(VoidCallback onLoginTap) {
-  return Navigator(
-    key: marketNavKey, // 👈 ADD THIS
-    onGenerateRoute: (_) =>
-        MaterialPageRoute(builder: (_) => MarketScreen(onLoginTap: onLoginTap)),
-  );
-}
-
-Widget newsTab() {
-  return Navigator(
-    key: newsNavKey, // 👈 ADD THIS
-    onGenerateRoute: (_) =>
-        MaterialPageRoute(builder: (_) => const NewsScreen()),
-  );
-}
-
-Widget mutualFundTab() {
-  return Navigator(
-    key: mutualFundNavKey,
-    onGenerateRoute: (_) =>
-        MaterialPageRoute(builder: (_) => const MutualFundScreen()),
-  );
 }
 
 class _BottomNavState extends ConsumerState<BottomNav> {
   int selectedIndex = 0;
 
-  // handle login success from LoginScreen (which sends userType)
   void handleLoginSuccess(String userType) {
-    // For now we treat every user as Generic (later branch by userType)
-    // 1) Switch nav mode to mystreet
+    debugPrint("🎯 BottomNav received userType: $userType");
     ref.read(navModeProvider.notifier).state = AppNavMode.mystreet;
-
-    // 2) Reset selected index to a valid index
     setState(() => selectedIndex = 0);
-
-    // Optionally you can store userType in a provider or local storage here.
   }
 
   void switchToIStreet() {
@@ -89,53 +60,44 @@ class _BottomNavState extends ConsumerState<BottomNav> {
   Widget build(BuildContext context) {
     final mode = ref.watch(navModeProvider);
 
-    // Build screens & items based on current mode
+    // 🔥 READ USER TYPE FROM AUTH PROVIDER
+    final auth = ref.watch(authProvider);
+    final userType = auth.userType ?? 'generic';
+
+    debugPrint("🔥 BottomNav userType = $userType");
+
     late final List<Widget> screens;
     late final List<BottomNavigationBarItem> items;
 
+    // ================== GUEST ==================
     if (mode == AppNavMode.guest) {
-      // BEFORE LOGIN
       screens = [
-        HomeScreen(onLoginTap: () => setState(() => selectedIndex = 5)),
-        marketTab(() => setState(() => selectedIndex = 5)),
-
-        newsTab(),
-
-        mutualFundTab(),
-
-       // const MyFinanceScreen(),
-        // LoginScreen must accept a callback that receives userType
+        HomeScreen(onLoginTap: () => setState(() => selectedIndex = 4)),
+        _marketTab(() => setState(() => selectedIndex = 4)),
+        _newsTab(),
+        _mutualFundTab(),
         LoginScreen(onLoginSuccess: handleLoginSuccess),
       ];
 
       items = const [
-        BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: "Home"),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.auto_graph_rounded),
-          label: "Market",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.newspaper_rounded),
-          label: "News",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.pie_chart_outline_rounded),
-          label: "MFund",
-        ),
-        // BottomNavigationBarItem(
-        //   icon: Icon(Icons.account_balance_rounded),
-        //   label: "Finance",
-        // ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.login_rounded),
-          label: "Login",
-        ),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+        BottomNavigationBarItem(icon: Icon(Icons.auto_graph), label: "Market"),
+        BottomNavigationBarItem(icon: Icon(Icons.newspaper), label: "News"),
+        BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: "MFund"),
+        BottomNavigationBarItem(icon: Icon(Icons.login), label: "Login"),
       ];
+
+      // ================== MYSTREET ==================
     } else if (mode == AppNavMode.mystreet) {
       screens = [
-        const GenericDashboardScreen(), // Dashboard
-        const RecommendationsScreen(), // Recommendations
-        const CommunityScreen(), // Community
+        _dashboardByUserType(userType), // ✅ FIXED
+        const RecommendationsScreen(),
+        Navigator(
+          key: communityNavKey,
+          onGenerateRoute: (_) =>
+              MaterialPageRoute(builder: (_) => const CommunityScreen()),
+        ),
+
         IStreetSwitchScreen(onSwitch: switchToIStreet),
       ];
 
@@ -151,130 +113,86 @@ class _BottomNavState extends ConsumerState<BottomNav> {
         BottomNavigationBarItem(icon: Icon(Icons.groups), label: "Community"),
         BottomNavigationBarItem(icon: Icon(Icons.language), label: "iStreet"),
       ];
+
+      // ================== ISTREET ==================
     } else {
-      // AppNavMode.istreet
-      // iStreet navbar: Home | Market | News | MFund | Finance | MyStreet
       screens = [
-        HomeScreen(onLoginTap: () => setState(() => selectedIndex = 5)),
-        marketTab(() => setState(() => selectedIndex = 5)),
-
-        newsTab(),
-
-        mutualFundTab(),
-
-      //const MyFinanceScreen(),
-        // Last item when tapped should switch back to MyStreet mode
+        HomeScreen(onLoginTap: () => setState(() => selectedIndex = 4)),
+        _marketTab(() => setState(() => selectedIndex = 4)),
+        _newsTab(),
+        _mutualFundTab(),
         MyStreetSwitchScreen(onSwitchBack: switchToMyStreet),
       ];
 
       items = const [
-        BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: "Home"),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.auto_graph_rounded),
-          label: "Market",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.newspaper_rounded),
-          label: "News",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.pie_chart_outline_rounded),
-          label: "MFund",
-        ),
-        // BottomNavigationBarItem(
-        //   icon: Icon(Icons.account_balance_rounded),
-        //   label: "Finance",
-        // ),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+        BottomNavigationBarItem(icon: Icon(Icons.auto_graph), label: "Market"),
+        BottomNavigationBarItem(icon: Icon(Icons.newspaper), label: "News"),
+        BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: "MFund"),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: "MyStreet"),
       ];
     }
 
-    // Ensure selectedIndex is in bounds for the current screens list
-    if (selectedIndex >= screens.length) {
-      selectedIndex = screens.length - 1;
-    }
-    if (selectedIndex < 0) selectedIndex = 0;
+    if (selectedIndex >= screens.length) selectedIndex = 0;
 
     return Scaffold(
       body: screens[selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
-        //  selectedItemColor: const Color(0xFF1E2A78),   // ✅ SAME COLOR
+        
         selectedItemColor: AppColors.iStreetBlue,
-
-        unselectedItemColor: Colors.grey, // optional
-        backgroundColor: Colors.white,
-        onTap: (index) {
-          if (index == selectedIndex) return;
-
-          // clear previous tab stack
-          if (selectedIndex == 1) {
-            marketNavKey.currentState?.popUntil((r) => r.isFirst);
-          }
-          if (selectedIndex == 2) {
-            newsNavKey.currentState?.popUntil((r) => r.isFirst);
-          }
-          if (selectedIndex == 3) {
-            mutualFundNavKey.currentState?.popUntil((r) => r.isFirst);
-          }
-
-          setState(() {
-            selectedIndex = index;
-          });
-        },
-
+        unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
-        selectedFontSize: 11,
-        unselectedFontSize: 11,
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
+        onTap: (i) => setState(() => selectedIndex = i),
         items: items,
       ),
     );
   }
 }
 
-/* ---------------------------------------------------------
-   SMALL HELPER / PLACEHOLDER SCREENS
-   Replace these placeholders with your real screens if you have them.
-   They are included so this BottomNav file is drop-in runnable.
---------------------------------------------------------- */
+// ================== HELPERS ==================
 
-class _SubscriptionPlaceholderScreen extends StatelessWidget {
-  const _SubscriptionPlaceholderScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Subscription")),
-      body: const Center(child: Text("Subscription screen (replace me)")),
-    );
+Widget _dashboardByUserType(String userType) {
+  switch (userType) {
+    case 'admin':
+      return const AdminDashboardScreen();
+    case 'advisor':
+      return const AdvisorDashboardScreen();
+    case 'analyst':
+      return const AnalystDashboardScreen();
+    case 'client':
+      return const ClientDashboardScreen();
+    default:
+      return const GenericDashboardScreen();
   }
 }
 
-class _RecommendationsPlaceholderScreen extends StatelessWidget {
-  const _RecommendationsPlaceholderScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Recommendations")),
-      body: const Center(child: Text("Recommendations screen (replace me)")),
-    );
-  }
+Widget _marketTab(VoidCallback onLoginTap) {
+  return Navigator(
+    key: marketNavKey,
+    onGenerateRoute: (_) =>
+        MaterialPageRoute(builder: (_) => MarketScreen(onLoginTap: onLoginTap)),
+  );
 }
 
-class _AdvisoryPlaceholderScreen extends StatelessWidget {
-  const _AdvisoryPlaceholderScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Advisory")),
-      body: const Center(child: Text("Advisory screen (replace me)")),
-    );
-  }
+Widget _newsTab() {
+  return Navigator(
+    key: newsNavKey,
+    onGenerateRoute: (_) =>
+        MaterialPageRoute(builder: (_) => const NewsScreen()),
+  );
 }
 
-/// When mystreet's "iStreet" item is tapped, this screen is loaded.
-/// It immediately (post frame) triggers the onSwitch callback => changes the nav mode.
+Widget _mutualFundTab() {
+  return Navigator(
+    key: mutualFundNavKey,
+    onGenerateRoute: (_) =>
+        MaterialPageRoute(builder: (_) => const MutualFundScreen()),
+  );
+}
+
+// ================== SWITCH SCREENS ==================
+
 class IStreetSwitchScreen extends StatefulWidget {
   final VoidCallback onSwitch;
   const IStreetSwitchScreen({super.key, required this.onSwitch});
@@ -287,21 +205,14 @@ class _IStreetSwitchScreenState extends State<IStreetSwitchScreen> {
   @override
   void initState() {
     super.initState();
-    // switch after frame so nav rebuilds safely
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.onSwitch();
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => widget.onSwitch());
   }
 
   @override
-  Widget build(BuildContext context) {
-    // show a small loader while switching
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
-  }
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: CircularProgressIndicator()));
 }
 
-/// When istreet's "MyStreet" item is tapped, this screen is loaded.
-/// It switches back to mystreet mode (post frame).
 class MyStreetSwitchScreen extends StatefulWidget {
   final VoidCallback onSwitchBack;
   const MyStreetSwitchScreen({super.key, required this.onSwitchBack});
@@ -314,13 +225,10 @@ class _MyStreetSwitchScreenState extends State<MyStreetSwitchScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.onSwitchBack();
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => widget.onSwitchBack());
   }
 
   @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
-  }
+  Widget build(BuildContext context) =>
+      const Scaffold(body: Center(child: CircularProgressIndicator()));
 }

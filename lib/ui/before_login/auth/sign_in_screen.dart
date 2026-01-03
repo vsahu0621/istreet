@@ -208,7 +208,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
             if (auth.isLoggedIn) {
               final userType = auth.userType ?? 'generic';
-
+             debugPrint("✅ Logged in userType: $userType");
               // 🔐 LOGIN STATE SAVE
               await AuthStorage.setLoggedIn(true);
 
@@ -216,7 +216,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               ref.read(navModeProvider.notifier).state = AppNavMode.mystreet;
 
               widget.onLoginSuccess(userType);
-              
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(message ?? "Login failed")),
